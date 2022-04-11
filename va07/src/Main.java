@@ -4,18 +4,14 @@ import org.junit.runner.notification.Failure;
 
 public class Main {
     public static void main(String[] args) {
-        // emulate a horrible operating system:
-        //System.getProperties().setProperty("file.separator", "\\");
-        //System.getProperties().setProperty("os.name", "windows");
-
         // own tests
-        UTestAudioFile.test_getPathname();
-        UTestAudioFile.test_getFilename();
-        UTestAudioFile.test_getAuthor();
-        UTestAudioFile.test_getTitle();
+        UTestWavFile.test_computeDuration();
+        UTestTaggedFile.test_timeFormatter();
+        UTestTaggedFile.test_readAndStoreTags();
+        //UTestTaggedFile.test_play();
 
         // cert tests
-        Result result = JUnitCore.runClasses(AttributesTest.class, AudioFileTest.class);
+        Result result = JUnitCore.runClasses(AttributesTest.class, AudioFileTest.class, SampledFileTest.class, TaggedFileTest.class, WavFileTest.class);
         for (Failure failure : result.getFailures())
             System.out.println(failure);
         if (result.wasSuccessful())

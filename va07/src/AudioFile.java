@@ -1,18 +1,31 @@
+import java.io.File;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class AudioFile {
-    private String author;
-    private String filename;
-    private String path;
-    private String title;
+public abstract class AudioFile {
+    protected String author;
+    private   String filename;
+    private   String path;
+    protected String title;
+    protected long   duration;
+
+    public static final Pattern FILENAME_PATTERN = Pattern.compile("^(?:\\s*(.*[^\\s]|)\\s+-\\s+)?(?:([^.\\s]*(?:\\s*\\.*[^.\\s]*)*?|))?(?:\\s*\\.[^.]*?)?\\s*$");
 
     public AudioFile() { }
 
     public AudioFile(String p) {
         this.parsePathname(p);
+        if (!(new File (this.path)).canRead())
+            throw new RuntimeException("Invalid path '" + this.path + "'");
         this.parseFilename(this.filename);
     }
+
+    public abstract String getFormattedDuration();
+    public abstract String getFormattedPosition();
+    public abstract void play();
+    public abstract void stop();
+    public abstract void togglePause();
+    public abstract String[] fields();
 
     public void parsePathname(String p) {
         char sep = System.getProperty("file.separator").charAt(0);
@@ -25,8 +38,7 @@ public class AudioFile {
 
     public void parseFilename(String f) {
         // regex magic go brrr
-        Pattern pattern = Pattern.compile("^(?:\\s*(.*[^\\s]|)\\s+-\\s+)?(?:([^.\\s]*(?:\\s*\\.*[^.\\s]*)*?|))?(?:\\s*\\.[^.]*?)?\\s*$");
-        Matcher matcher = pattern.matcher(f);
+        Matcher matcher = FILENAME_PATTERN.matcher(f);
         if (matcher.find()) {
             this.author = matcher.group(1);
             this.title = matcher.group(2);
@@ -54,7 +66,7 @@ public class AudioFile {
     public String toString() {
         if (this.author.isEmpty())
             return this.title;
-        return this.author + " - " + this.title;
+        return this.author + " - " + this.title + " - " + this.getFormattedDuration();
     }
 
     /**
