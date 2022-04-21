@@ -1,3 +1,5 @@
+package studiplayer.audio;
+
 import java.util.Map;
 import studiplayer.basic.TagReader;
 
@@ -8,13 +10,18 @@ public class TaggedFile extends SampledFile {
         super();
     }
 
-    public TaggedFile(String p) {
+    public TaggedFile(String p) throws NotPlayableException {
         super(p);
         this.readAndStoreTags();
     }
 
-    public void readAndStoreTags() {
-        Map<String, Object> tagMap = TagReader.readTags(this.getPathname());
+    public void readAndStoreTags() throws NotPlayableException {
+        Map<String, Object> tagMap;
+        try {
+            tagMap = TagReader.readTags(this.getPathname());
+        } catch(Exception e) {
+            throw new NotPlayableException(this.getPathname(), e);
+        }
         String author = (String) tagMap.get("author");
         String title = (String) tagMap.get("title");
         String album = (String) tagMap.get("album");

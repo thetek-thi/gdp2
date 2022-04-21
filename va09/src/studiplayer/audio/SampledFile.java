@@ -1,3 +1,5 @@
+package studiplayer.audio;
+
 import studiplayer.basic.BasicPlayer;
 
 public abstract class SampledFile extends AudioFile {
@@ -5,7 +7,7 @@ public abstract class SampledFile extends AudioFile {
         super();
     }
 
-    public SampledFile(String p) {
+    public SampledFile(String p) throws NotPlayableException {
         super(p);
     }
 
@@ -17,8 +19,12 @@ public abstract class SampledFile extends AudioFile {
         return timeFormatter(BasicPlayer.getPosition());
     }
 
-    public void play() {
-        BasicPlayer.play(this.getPathname());
+    public void play() throws NotPlayableException {
+        try {
+            BasicPlayer.play(this.getPathname());
+        } catch(Exception e) {
+            throw new NotPlayableException(this.getPathname(), e);
+        }
     }
 
     public void stop() {

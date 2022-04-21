@@ -1,3 +1,5 @@
+package studiplayer.audio;
+
 import java.io.File;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -13,16 +15,16 @@ public abstract class AudioFile {
 
     public AudioFile() { }
 
-    public AudioFile(String p) {
+    public AudioFile(String p) throws NotPlayableException {
         this.parsePathname(p);
-        if (!(new File (this.path)).canRead())
-            throw new RuntimeException("Invalid path '" + this.path + "'");
+        if (!(new File(this.path)).canRead())
+            throw new NotPlayableException(this.path, "Invalid path");
         this.parseFilename(this.filename);
     }
 
     public abstract String getFormattedDuration();
     public abstract String getFormattedPosition();
-    public abstract void play();
+    public abstract void play() throws NotPlayableException;
     public abstract void stop();
     public abstract void togglePause();
     public abstract String[] fields();

@@ -1,4 +1,4 @@
-src     := {src,../lib}
+src     := {src,test,../libpkg}
 classes := bin
 
 main    := Main
@@ -15,7 +15,7 @@ mkdir:
 	@mkdir -p $(classes)
 
 compile:
-	javac -cp $(libs):. -d $(classes) $(src)/*.java
+	javac -cp $(libs):. -d $(classes) $(src)/studiplayer/audio/*.java
 run:
 	@java -cp $(classes):$(libs):. $(main)
 

@@ -1,3 +1,5 @@
+package studiplayer.audio;
+
 import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
 import org.junit.runner.notification.Failure;
@@ -5,10 +7,7 @@ import org.junit.runner.notification.Failure;
 public class Main {
     public static void main(String[] args) {
         // own tests
-        //UTestPlayList.test_getCurrentAudioFile();
-        //UTestPlayList.test_changeCurrent();
-        //UTestPlayList.test_saveAsM3U();
-        //UTestAudioFileFactory.test_getInstance();
+        UTestAudioFileFactory.test_getInstance();
 
         // cert tests
         //Result result = JUnitCore.runClasses(AttributesTest.class, AudioFileFactoryTest.class, AudioFileTest.class, PlayListTest.class, SampledFileTest.class, TaggedFileTest.class, WavFileTest.class);

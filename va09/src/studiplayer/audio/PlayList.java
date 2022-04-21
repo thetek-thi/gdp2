@@ -1,3 +1,5 @@
+package studiplayer.audio;
+
 // java imports are ridiculous
 import java.io.File;
 import java.io.FileWriter;
@@ -93,8 +95,13 @@ public class PlayList extends LinkedList<AudioFile> {
             int i = 1;
             while (scanner.hasNextLine()) {
                 line = scanner.nextLine();
-                if (!(line.startsWith("#") || line.isBlank()))
-                    this.add(AudioFileFactory.getInstance(line));
+                if (!(line.startsWith("#") || line.isBlank())) {
+                    try {
+                        this.add(AudioFileFactory.getInstance(line));
+                    } catch(NotPlayableException e) {
+                        e.printStackTrace();
+                    }
+                }
                 ++i;
             }
         } catch (IOException e) {
