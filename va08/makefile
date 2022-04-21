@@ -1,4 +1,4 @@
-src     := {src,test,../lib}
+src     := {src,test,cert,../lib}
 classes := bin
 
 main    := Main
