@@ -1,7 +1,8 @@
 src     := {src,test,../libpkg}
+cert    := cert/studiplayer/cert
 classes := bin
 
-main    := Main
+main    := studiplayer.audio.Main
 libs    := /usr/share/java/junit.jar:/usr/share/java/hamcrest/hamcrest.jar:../jars/jl1.0.jar:../jars/jorbis-0.0.15.jar:../jars/studiplayer.jar:../jars/vorbisspi1.0.2.jar:../jars/jogg-0.0.7.jar:../jars/mp3spi1.9.5.jar:../jars/tritonus_share.jar:
 
 
@@ -15,7 +16,7 @@ mkdir:
 	@mkdir -p $(classes)
 
 compile:
-	javac -cp $(libs):. -d $(classes) $(src)/studiplayer/audio/*.java
+	javac -cp $(libs):. -d $(classes) $(src)/studiplayer/audio/*.java $(cert)/*.java
 run:
 	@java -cp $(classes):$(libs):. $(main)
 

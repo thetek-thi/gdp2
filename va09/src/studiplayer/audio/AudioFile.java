@@ -64,6 +64,10 @@ public abstract class AudioFile {
     public String getTitle() {
         return this.title;
     }
+    
+    public long getRawDuration() {
+        return this.duration;
+    }
 
     public String toString() {
         if (this.author.isEmpty())

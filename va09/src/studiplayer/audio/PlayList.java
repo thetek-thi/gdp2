@@ -42,9 +42,9 @@ public class PlayList extends LinkedList<AudioFile> {
 
         if (this.current < 0 || this.current >= this.size())
             return null;
-        if (!this.randomOrder)
-            return this.ordered.get(this.current);
-        return this.get(this.current);
+        if (this.randomOrder)
+            return this.get(this.current);
+        return this.ordered.get(this.current);
     }
 
     public void changeCurrent() {
@@ -117,6 +117,13 @@ public class PlayList extends LinkedList<AudioFile> {
         if (this.randomOrder)
             return super.toString();
         return this.ordered.toString();
+    }
+
+    public void sort(SortCriterion order) {
+        if (order == SortCriterion.AUTHOR)   Collections.sort(this, new AuthorComparator());
+        if (order == SortCriterion.ALBUM)    Collections.sort(this, new AlbumComparator());
+        if (order == SortCriterion.DURATION) Collections.sort(this, new DurationComparator());
+        if (order == SortCriterion.TITLE)    Collections.sort(this, new TitleComparator());
     }
 }
 
