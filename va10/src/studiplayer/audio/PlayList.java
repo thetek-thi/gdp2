@@ -75,7 +75,7 @@ public class PlayList extends LinkedList<AudioFile> {
             writer = new FileWriter(pathname);
             writer.write("# m3u file created by " + System.getProperty("user.name") + linesep);
             writer.write("# m3u file created on " + DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").withLocale(Locale.getDefault()).withZone(ZoneId.systemDefault()).format(Instant.now()) + linesep + linesep);
-            for (AudioFile af : this)
+            for (AudioFile af : this.ordered)
                 writer.write(af.getPathname() + linesep);
         } catch (IOException e) {
             throw new RuntimeException("Unable to write file " + pathname + ": " + e.getMessage());
