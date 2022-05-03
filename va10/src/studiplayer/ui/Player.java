@@ -29,6 +29,9 @@ public class Player extends Application {
     private Button   nextButton;
     private Button   editorButton;
 
+    private PlayListEditor playListEditor;
+    private boolean        editorVisible;
+
     private volatile boolean stopped = true;
 
     public  static final String DEFAULT_PLAYLIST = "playlists/DefaultPlayList.m3u";
@@ -41,6 +44,7 @@ public class Player extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+System.out.println("\u001b[34m START \u001b[0m");
         this.primaryStage = primaryStage;
 
         List<String> parameters = getParameters().getRaw();
@@ -70,7 +74,13 @@ public class Player extends Application {
         nextButton.setOnAction (e -> { nextSong        (); });
 
         editorButton.setOnAction(e -> {
-            // open playlist editor
+            if (this.editorVisible) {
+                this.editorVisible = false;
+                playListEditor.hide();
+            } else {
+                this.editorVisible = true;
+                playListEditor.show();
+            }
         });
 
         hbox.getChildren().addAll(this.playTime, playButton, pauseButton, stopButton, nextButton, editorButton);
@@ -98,9 +108,13 @@ public class Player extends Application {
         } else {
             setButtonStates(true, true, true, true, false);
         }
+
+        this.playListEditor = new PlayListEditor(this, this.playList);
+        this.editorVisible  = false;
     }
 
     private Button createButton(String iconfile) {
+System.out.println("\u001b[34m START \u001b[0m");
         Button button = null;
         try {
             URL url = getClass().getResource("/icons/" + iconfile);
@@ -118,6 +132,7 @@ public class Player extends Application {
     }
 
     private void updateSongInfo(AudioFile af) {
+System.out.println("\u001b[34m UPDATESONGINFO \u001b[0m");
         if (af == null) {
             this.songDescription.setText(NO_CURRENT_SONG);
             this.playTime.setText(NO_POSITION);
@@ -129,7 +144,8 @@ public class Player extends Application {
         }
     }
 
-    private void playCurrentSong() {
+    public void playCurrentSong() {
+System.out.println("\u001b[34m PLAYCURRENTSONG \u001b[0m");
         AudioFile af = this.playList.getCurrentAudioFile();
         updateSongInfo(af);
         this.stopped = false;
@@ -140,7 +156,8 @@ public class Player extends Application {
         setButtonStates(true, false, false, false, false);
     }
 
-    private void pauseCurrentSong() {
+    public void pauseCurrentSong() {
+System.out.println("\u001b[34m PAUSECURRENTSONG \u001b[0m");
         AudioFile af = this.playList.getCurrentAudioFile();
         updateSongInfo(af);
         this.stopped = !this.stopped;
@@ -153,7 +170,8 @@ public class Player extends Application {
         }
     }
 
-    private void stopCurrentSong() {
+    public void stopCurrentSong() {
+System.out.println("\u001b[34m STOPCURRENTSONG \u001b[0m");
         AudioFile af = this.playList.getCurrentAudioFile();
         if (this.playList.size() > 0)
             af.stop();
@@ -162,7 +180,8 @@ public class Player extends Application {
         setButtonStates(false, true, true, false, false);
     }
 
-    private void nextSong() {
+    public void nextSong() {
+System.out.println("\u001b[34m NEXTSONG \u001b[0m");
         if (this.playList.size() > 0) {
             if (!this.stopped) {
                 this.playList.getCurrentAudioFile().stop();
@@ -185,6 +204,7 @@ public class Player extends Application {
     }
 
     private void refreshUI() {
+System.out.println("\u001b[34m REFRESHUI \u001b[0m");
         Platform.runLater(() -> {
             if (this.playList != null && playList.size() > 0) {
                 updateSongInfo(this.playList.getCurrentAudioFile());
@@ -197,11 +217,34 @@ public class Player extends Application {
     }
 
     private void setButtonStates(boolean playButtonState, boolean pauseButtonState, boolean stopButtonState, boolean nextButtonState, boolean editorButtonState) {
+System.out.println("\u001b[34m SETBUTTONSTATES \u001b[0m");
         this.playButton  .setDisable(playButtonState);
         this.pauseButton .setDisable(pauseButtonState);
         this.stopButton  .setDisable(stopButtonState);
         this.nextButton  .setDisable(nextButtonState);
         this.editorButton.setDisable(editorButtonState);
+    }
+
+    public void setEditorVisible(boolean editorVisible) {
+System.out.println("\u001b[34m SETEDITORVISIBLE \u001b[0m");
+        this.editorVisible = editorVisible;
+    }
+
+    public String getPlayListPathname() {
+System.out.println("\u001b[34m GETPLAYLISTPATHNAME \u001b[0m");
+        return this.playListPathname;
+    }
+
+    public void setPlayList(String playListPathname) {
+System.out.println("\u001b[34m SETPLAYLIST \u001b[0m");
+        if (playListPathname.equals("") || playListPathname == null) {
+            this.playListPathname = DEFAULT_PLAYLIST;
+            this.playList = new PlayList(DEFAULT_PLAYLIST);
+        } else {
+            this.playListPathname = playListPathname;
+            this.playList = new PlayList(playListPathname);
+        }
+        refreshUI();
     }
 
     public static void main(String[] args) {
@@ -211,6 +254,7 @@ public class Player extends Application {
     private class TimerThread extends Thread {
         public void run() {
             while (!stopped && playList.size() > 0) {
+System.out.println("\u001b[34m TIMERTHREAD-WHILE \u001b[0m");
                 refreshUI();
                 try {
                     sleep(100);
@@ -222,6 +266,7 @@ public class Player extends Application {
     private class PlayerThread extends Thread {
         public void run() {
             while (!stopped && playList.size() > 0) {
+System.out.println("\u001b[34m PLAYERTHREAD-WHILE \u001b[0m");
                 try {
                     playList.getCurrentAudioFile().play();
                     if (!stopped) {
@@ -230,7 +275,8 @@ public class Player extends Application {
                             updateSongInfo(playList.getCurrentAudioFile());
                         });
                     }
-                } catch (NotPlayableException e) { e.printStackTrace(); }
+                } catch (NotPlayableException e) { e.printStackTrace(); break; }
+System.out.println("\u001b[34m PLAYERTHREAD-WHILEEND \u001b[0m");
             }
         }
     }
